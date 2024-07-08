@@ -1,4 +1,3 @@
-      
 namespace override_teran
 {
     abstract class Teran
@@ -42,6 +41,13 @@ namespace override_teran
             firebat.Attack();
             Tank tank = new Tank();
             tank.Attack();
+            //부모 클래스 활용 
+            Teran unit1 = new Marin();
+            Teran unit2 = new Firebat();
+            Teran unit3 = new Tank();
+            unit1.Attack();
+            unit2.Attack();
+            unit3.Attack();
         }
     }
 }
