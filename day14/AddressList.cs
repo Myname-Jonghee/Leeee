@@ -101,7 +101,18 @@ namespace Listpractice
             }
             static void EditPerson(List<Person> addressbook)
             {
-               
+               Console.Write("수정할 ID를 입력해주세요");
+int update = int.Parse(Console.ReadLine());
+for(int i = 0; i < addressbook.Count;i++)
+{
+    Console.WriteLine("수정 ID를 입력하세요 :");
+    addressbook[i].Id = int.Parse(Console.ReadLine());
+    Console.WriteLine("수정 이름을 입력하세요 :");
+    addressbook[i].Name = Console.ReadLine();
+    Console.WriteLine("수정 번호를 입력하세요 :");
+    addressbook[i].Hp = int.Parse(Console.ReadLine());
+}
+
 
             }
             }
