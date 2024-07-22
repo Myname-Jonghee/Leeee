@@ -129,7 +129,7 @@ namespace addresswithOracle
                         switch (sure) //삭제 다시 물어보기
                         {
                             case "y":
-                            cmd.CommandText = "Delete from namecard where Id = " + id;
+                            cmd.CommandText = $"DELETE FROM namecard  WHERE CARDID = '{id}'";
                              cmd.ExecuteNonQuery();
                             Console.WriteLine($"{id}삭제완료");
                              break;
