@@ -66,26 +66,26 @@ namespace RamenFactoryProject01
                         break;
 
                     case 1:
-                        
-                            Console.WriteLine("선수 고유번호를 입력하세요");
-                            id = int.Parse(Console.ReadLine());
-                            Console.WriteLine("이름을 입력하세요");
-                            name = Console.ReadLine();
-                            Console.WriteLine("나이를 입력하세요");
-                            age = int.Parse(Console.ReadLine());
-                            Console.WriteLine("나라를 입력하세요");
-                            country = Console.ReadLine();
-                            Console.WriteLine("종목을 입력하세요");
-                            major = Console.ReadLine();
-                            Console.WriteLine("키를 입력하세요");
-                            height = int.Parse(Console.ReadLine());
-                            Console.WriteLine("몸무게를 입력하세요");
-                            weight = int.Parse(Console.ReadLine());
+
+                        Console.WriteLine("선수 고유번호를 입력하세요");
+                        id = int.Parse(Console.ReadLine());
+                        Console.WriteLine("이름을 입력하세요");
+                        name = Console.ReadLine();
+                        Console.WriteLine("나이를 입력하세요");
+                        age = int.Parse(Console.ReadLine());
+                        Console.WriteLine("나라를 입력하세요");
+                        country = Console.ReadLine();
+                        Console.WriteLine("종목을 입력하세요");
+                        major = Console.ReadLine();
+                        Console.WriteLine("키를 입력하세요");
+                        height = int.Parse(Console.ReadLine());
+                        Console.WriteLine("몸무게를 입력하세요");
+                        weight = int.Parse(Console.ReadLine());
 
                         cmd.CommandText = "INSERT INTO Olympic (ID,Name, Age, Country, Major, Height, Weight) " +
                                           "VALUES (:id, :name, :age, :country, :major, :height, :weight)";
 
-                      
+
                         cmd.Parameters.Clear();
                         cmd.Parameters.Add(new OracleParameter("id", id));
                         cmd.Parameters.Add(new OracleParameter("name", name));
@@ -95,12 +95,12 @@ namespace RamenFactoryProject01
                         cmd.Parameters.Add(new OracleParameter("height", height));
                         cmd.Parameters.Add(new OracleParameter("weight", weight));
 
-                       
+
                         cmd.ExecuteNonQuery();
                         break;
 
-               
-            
+
+
                     case 2:
                         Console.WriteLine("데이터를 확인 할 ID를 입력하세요");
                         id = int.Parse(Console.ReadLine());
@@ -120,7 +120,7 @@ namespace RamenFactoryProject01
                             Console.Write($"선수고유번호: {id},이름: {name},나이: {age} ,나라: {country},종목: {major},키: {height}, 몸무게: {weight}");
                         }
                         cmd.ExecuteNonQuery();
-                        Console.WriteLine( );
+                        Console.WriteLine();
                         break;
 
                     case 3:
@@ -132,18 +132,18 @@ namespace RamenFactoryProject01
 
                             // 수정할 선수의 정보 입력 받기
                             Console.WriteLine("수정할 선수 이름을 입력하세요:");
-                             name = Console.ReadLine();
+                            name = Console.ReadLine();
                             Console.WriteLine("수정할 선수 나이를 입력하세요:");
-                             age = int.Parse(Console.ReadLine());
+                            age = int.Parse(Console.ReadLine());
 
                             Console.WriteLine("수정할 선수 나라를 입력하세요:");
-                             country = Console.ReadLine();
+                            country = Console.ReadLine();
                             Console.WriteLine("수정할 주종목을 입력하세요:");
-                             major = Console.ReadLine();
+                            major = Console.ReadLine();
                             Console.WriteLine("수정할 선수 키를 입력하세요:");
-                             height = int.Parse(Console.ReadLine());
+                            height = int.Parse(Console.ReadLine());
                             Console.WriteLine("수정할 선수 몸무게를 입력하세요:");
-                             weight = int.Parse(Console.ReadLine());
+                            weight = int.Parse(Console.ReadLine());
 
                             // SQL 쿼리 및 매개변수 설정
                             cmd.CommandText = "UPDATE Olympic SET " +
@@ -173,30 +173,67 @@ namespace RamenFactoryProject01
                         {
                             Console.WriteLine("입력된 데이터 형식이 올바르지 않습니다. " + ex.Message);
                         }
-                        
+
                         break;
 
 
                     case 4:
-                        Console.WriteLine("삭제할 선수고유번호를 입력하세요.");
-                        id = int.Parse(Console.ReadLine());
-                        Console.WriteLine("정말 삭제 하시겠습니까? Y/N ");
-                        string sure = Console.ReadLine();
-                        switch (sure) //삭제 다시 물어보기
+                        try
                         {
-                            case "y":
-                                cmd.CommandText = $"DELETE FROM Olympic  WHERE ID = '{id}'";
-                                cmd.ExecuteNonQuery();
-                                Console.WriteLine($"{id}삭제완료");
-                                break;
+                            //고유 번호 입력 받아오기
+                            Console.WriteLine("삭제할 선수 고유번호를 입력하세요:");
+                            id = int.Parse(Console.ReadLine());
+
+                            Console.WriteLine("정말 삭제 하시겠습니까? Y/N");
+                            string sure = Console.ReadLine().Trim().ToLower();
+                            //삭제 재확인 후 삭제 과정 진행
+                            if (sure == "y")
+                            {
+                                // SQL DELETE 쿼리
+                                cmd.CommandText = "DELETE FROM Olympic WHERE ID = :id";
+                                // 매개변수 설정
+                                cmd.Parameters.Clear();
+                                cmd.Parameters.Add(new OracleParameter("id", id));
+                                // 쿼리 실행
+                                int Delete = cmd.ExecuteNonQuery();
+                                if (Delete > 0)
+                                {
+                                    Console.WriteLine($"{id} 삭제 완료");
+                                }
+                                else
+                                {
+                                    Console.WriteLine($"{id}에 해당하는 선수 정보가 없습니다.");
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("삭제가 취소되었습니다.");
+                            }
                         }
-                        break;//case 4 break
+                        catch (FormatException ex)
+                        {
+                            Console.WriteLine("입력 형식이 올바르지 않습니다. " + ex.Message);
+                        }
+                        catch (OracleException ex)
+                        {
+                            Console.WriteLine("데이터베이스 오류가 발생했습니다: " + ex.Message);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("오류가 발생했습니다: " + ex.Message);
+                        }
+                        break;
+
                     case 5:
                         cmd.CommandText = "select*from Olympic";
                         OracleDataReader rdr = cmd.ExecuteReader();
 
+                        bool Data = false;
+
                         while (rdr.Read())
                         {
+                            Data = true; // data값이 있는경우를 true
+
                             id = rdr.GetInt32(rdr.GetOrdinal("ID"));
                             name = rdr["name"] as string;
                             age = rdr.GetInt32(rdr.GetOrdinal("AGE"));
@@ -207,7 +244,12 @@ namespace RamenFactoryProject01
 
                             Console.WriteLine($"{id} | {name} | {age} | {country} | {major} | {height} | {weight} ");
                         }
+                        if(!Data) //!data 데이터값이 없을 때 출력
+                        {
+                            Console.WriteLine("선수정보가 없습니다");
+                        }
                         break;
+
                     case 6:
                         Console.WriteLine("종료합니다");
                         break;
