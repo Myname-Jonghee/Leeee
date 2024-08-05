@@ -1,0 +1,220 @@
+using Oracle.ManagedDataAccess.Client;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Net;
+using System.Xml.Linq;
+using System.Numerics;
+using System.Data;
+using System.ComponentModel.Design;
+namespace RamenFactoryProject01
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            //SELECT 데이터 조회
+            string strConn = "Data Source=(DESCRIPTION=" +
+                "(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)" +
+                "(HOST=localhost)(PORT=1521)))" +
+                "(CONNECT_DATA=(SERVER=DEDICATED)" +
+                "(SERVICE_NAME=xe)));" +
+                "User Id=scott;Password=TIGER;";
+
+            int id;
+            string name;
+            int age;
+            string country;
+            string major;
+            int height;
+            int weight;
+            
+            //1.연결 객체 만들기 - Client
+            OracleConnection conn = new OracleConnection(strConn);
+            //2.데이터베이스 접속을 위한 연결
+            conn.Open();
+            //명령객체 생성
+            OracleCommand cmd = new OracleCommand();
+            cmd.Connection = conn;
+
+            int chocie;
+
+            do
+            {
+                Console.WriteLine();
+                Console.WriteLine("0. 정보검색 테이블 생성");
+                Console.WriteLine("1. 선수 추가");
+                Console.WriteLine("2. 선수 검색");
+                Console.WriteLine("3. 선수 정보 수정");
+                Console.WriteLine("4. 선수 정보 삭제");
+                Console.WriteLine("5. 전체 명단  조회");
+                Console.WriteLine("6. 프로그램 종료");
+                Console.WriteLine("--------------------");
+                chocie = int.Parse(Console.ReadLine());
+                switch (chocie)
+                {
+                    case 0:
+                        //테이블
+                        cmd.CommandText = "CREATE TABLE Olympic (" +
+                        "ID NUMBER PRIMARY KEY, " +
+                        "Name VARCHAR2(50) NOT NULL, " +
+                        "Age NUMBER NOT NULL, " +
+                        "Country VARCHAR2(100) NOT NULL, " +
+                        "Major VARCHAR2(100), " +
+                        "Height NUMBER, " +
+                        "Weight NUMBER)";
+                        cmd.ExecuteNonQuery();
+                        Console.WriteLine("테이블이 생성되었습니다.");
+                        break;
+
+                    case 1:
+                        
+                            Console.WriteLine("선수 고유번호를 입력하세요");
+                            id = int.Parse(Console.ReadLine());
+                            Console.WriteLine("이름을 입력하세요");
+                            name = Console.ReadLine();
+                            Console.WriteLine("나이를 입력하세요");
+                            age = int.Parse(Console.ReadLine());
+                            Console.WriteLine("나라를 입력하세요");
+                            country = Console.ReadLine();
+                            Console.WriteLine("종목을 입력하세요");
+                            major = Console.ReadLine();
+                            Console.WriteLine("키를 입력하세요");
+                            height = int.Parse(Console.ReadLine());
+                            Console.WriteLine("몸무게를 입력하세요");
+                            weight = int.Parse(Console.ReadLine());
+
+                        cmd.CommandText = "INSERT INTO Olympic (ID,Name, Age, Country, Major, Height, Weight) " +
+                                          "VALUES (:id, :name, :age, :country, :major, :height, :weight)";
+
+                      
+                        cmd.Parameters.Clear();
+                        cmd.Parameters.Add(new OracleParameter("id", id));
+                        cmd.Parameters.Add(new OracleParameter("name", name));
+                        cmd.Parameters.Add(new OracleParameter("age", age));
+                        cmd.Parameters.Add(new OracleParameter("country", country));
+                        cmd.Parameters.Add(new OracleParameter("major", major));
+                        cmd.Parameters.Add(new OracleParameter("height", height));
+                        cmd.Parameters.Add(new OracleParameter("weight", weight));
+
+                       
+                        cmd.ExecuteNonQuery();
+                        break;
+
+               
+            
+                    case 2:
+                        Console.WriteLine("데이터를 확인 할 ID를 입력하세요");
+                        id = int.Parse(Console.ReadLine());
+                        cmd.CommandText = "SELECT * FROM Olympic WHERE ID = " + id;
+                        OracleDataReader odr = cmd.ExecuteReader();
+
+                        while (odr.Read())
+                        {
+                            id = odr.GetInt32(0);
+                            name = odr["NAME"] as string;
+                            age = odr.GetInt32(odr.GetOrdinal("AGE"));
+                            country = odr["COUNTRY"] as string;
+                            major = odr["MAJOR"] as string;
+                            height = odr.GetInt32(odr.GetOrdinal("HEIGHT"));
+                            weight = odr.GetInt32(odr.GetOrdinal("WEIGHT"));
+
+                            Console.Write($"선수고유번호: {id},이름: {name},나이: {age} ,나라: {country},종목: {major},키: {height}, 몸무게: {weight}");
+                        }
+                        cmd.ExecuteNonQuery();
+                        Console.WriteLine( );
+                        break;
+
+                    case 3:
+                        try
+                        {
+                            // 사용자로부터 수정할 선수의 ID 입력 받기
+                            Console.WriteLine("수정할 선수의 ID를 입력하세요:");
+                            id = int.Parse(Console.ReadLine());
+
+                            // 수정할 선수의 정보 입력 받기
+                            Console.WriteLine("수정할 선수 이름을 입력하세요:");
+                             name = Console.ReadLine();
+                            Console.WriteLine("수정할 선수 나이를 입력하세요:");
+                             age = int.Parse(Console.ReadLine());
+
+                            Console.WriteLine("수정할 선수 나라를 입력하세요:");
+                             country = Console.ReadLine();
+                            Console.WriteLine("수정할 주종목을 입력하세요:");
+                             major = Console.ReadLine();
+                            Console.WriteLine("수정할 선수 키를 입력하세요:");
+                             height = int.Parse(Console.ReadLine());
+                            Console.WriteLine("수정할 선수 몸무게를 입력하세요:");
+                             weight = int.Parse(Console.ReadLine());
+
+                            // SQL 쿼리 및 매개변수 설정
+                            cmd.CommandText = "UPDATE Olympic SET " +
+                                              "NAME = :name, " +
+                                              "AGE = :age, " +
+                                              "COUNTRY = :country, " +
+                                              "MAJOR = :major, " +
+                                              "HEIGHT = :height, " +
+                                              "WEIGHT = :weight " +
+                                              "WHERE ID = :id"; // ID를 사용하여 특정 레코드를 식별
+
+                            // 매개변수 추가
+                            cmd.Parameters.Clear();
+                            cmd.Parameters.Add(new OracleParameter("name", name));
+                            cmd.Parameters.Add(new OracleParameter("age", age));
+                            cmd.Parameters.Add(new OracleParameter("country", country));
+                            cmd.Parameters.Add(new OracleParameter("major", major));
+                            cmd.Parameters.Add(new OracleParameter("height", height));
+                            cmd.Parameters.Add(new OracleParameter("weight", weight));
+                            cmd.Parameters.Add(new OracleParameter("id", id)); // WHERE 절에 사용할 ID 매개변수
+
+                            // 쿼리 실행
+                            int rowsAffected = cmd.ExecuteNonQuery();
+                            Console.WriteLine($"{rowsAffected} 개의 레코드가 수정되었습니다.");
+                        }
+                        catch (FormatException ex)
+                        {
+                            Console.WriteLine("입력된 데이터 형식이 올바르지 않습니다. " + ex.Message);
+                        }
+                        
+                        break;
+
+
+                    case 4:
+                        Console.WriteLine("삭제할 선수고유번호를 입력하세요.");
+                        id = int.Parse(Console.ReadLine());
+                        Console.WriteLine("정말 삭제 하시겠습니까? Y/N ");
+                        string sure = Console.ReadLine();
+                        switch (sure) //삭제 다시 물어보기
+                        {
+                            case "y":
+                                cmd.CommandText = $"DELETE FROM Olympic  WHERE ID = '{id}'";
+                                cmd.ExecuteNonQuery();
+                                Console.WriteLine($"{id}삭제완료");
+                                break;
+                        }
+                        break;//case 4 break
+                    case 5:
+                        cmd.CommandText = "select*from Olympic";
+                        OracleDataReader rdr = cmd.ExecuteReader();
+
+                        while (rdr.Read())
+                        {
+                            id = rdr.GetInt32(rdr.GetOrdinal("ID"));
+                            name = rdr["name"] as string;
+                            age = rdr.GetInt32(rdr.GetOrdinal("AGE"));
+                            country = rdr["country"] as string;
+                            major = rdr["major"] as string;
+                            height = rdr.GetInt32(rdr.GetOrdinal("HEIGHT"));
+                            weight = rdr.GetInt32(rdr.GetOrdinal("WEIGHT"));
+
+                            Console.WriteLine($"{id} | {name} | {age} | {country} | {major} | {height} | {weight} ");
+                        }
+                        break;
+                    case 6:
+                        Console.WriteLine("종료합니다");
+                        break;
+
+                }//switch end
+            } while (chocie != 6);
+
+        }
+    }
+}
