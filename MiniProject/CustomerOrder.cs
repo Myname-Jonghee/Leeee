@@ -1,8 +1,11 @@
 using Oracle.ManagedDataAccess.Client;
+using Oracle.ManagedDataAccess.Types;
+using System.Data;
 namespace MiniProjectBuycar
 {
     public partial class OrderPage : Form
     {
+        public int NewCustomerID { get; private set; }
         public OrderPage()
         {
             InitializeComponent();
@@ -121,26 +124,27 @@ namespace MiniProjectBuycar
                 {
                     conn.Open();
 
-                    string query = "INSERT INTO Customer (Model, Engine, Color) VALUES (:model, :engine, :color )";
-                    using (OracleCommand cmd = new OracleCommand(query, conn))
+                    string insertQuery = "INSERT INTO Customer (CustomerID, Model, Engine, Color) VALUES (SEQ_CUSTOMERID.NEXTVAL, :model, :engine, :color)";
+                    using (OracleCommand insertCmd = new OracleCommand(insertQuery, conn))
                     {
-                        cmd.Parameters.Add(new OracleParameter("model", selectedModel));
-                        cmd.Parameters.Add(new OracleParameter("engine", selectedEngine));
-                        cmd.Parameters.Add(new OracleParameter("color", selectedColor));
-                        MessageBox.Show("차량 정보 저장이 완료되었습니다.", "저장 완료", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        cmd.ExecuteNonQuery();
+                        insertCmd.Parameters.Add(new OracleParameter("model", selectedModel));
+                        insertCmd.Parameters.Add(new OracleParameter("engine", selectedEngine));
+                        insertCmd.Parameters.Add(new OracleParameter("color", selectedColor));
+                        MessageBox.Show("차량 정보 저장이 완료되었습니다. 고객 ID: " + NewCustomerID, "저장 완료", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        insertCmd.ExecuteNonQuery();
+                    
                     }
+                    AddOption addOption = new AddOption();
+                    addOption.ShowDialog();
+                    conn.Close();
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("데이터를 저장하는 동안 오류가 발생했습니다: " + ex.Message, "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
-            // AddOption 폼 인스턴스 생성 및 데이터 전달
-            AddOption addOptionForm = new AddOption();
-            addOptionForm.ShowDialog();
+            
         }
-
+        
     }//orderpage:form END
 }
