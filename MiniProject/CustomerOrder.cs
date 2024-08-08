@@ -1,8 +1,8 @@
 namespace MiniProjectBuycar
 {
-    public partial class Form1 : Form
+    public partial class OrderPage : Form
     {
-        public Form1()
+        public OrderPage()
         {
             InitializeComponent();
             comboBox1.Items.Add("K3");
@@ -43,7 +43,7 @@ namespace MiniProjectBuycar
             comboBox3.Items.Clear();
             comboBox3.Items.Add("검정");
             comboBox3.Items.Add("흰색");
-            comboBox3.Items.Add("쥐색");
+            comboBox3.Items.Add("회색");
         }
 
         private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
@@ -54,7 +54,7 @@ namespace MiniProjectBuycar
             string imagePath = "";
 
             // 두 ComboBox의 선택된 항목에 따라 조건 검사
-            if (selectedModel == "K3" && selectedColor == "쥐색")
+            if (selectedModel == "K3" && selectedColor == "회색")
             {
                 imagePath = "C:\\Users\\Admin\\source\\repos\\MiniProjectBuycar\\K3\\K3_GRAY.png"; // K3 쥐색 이미지 파일 경로
             }
@@ -70,7 +70,7 @@ namespace MiniProjectBuycar
             {
                 imagePath = "C:\\Users\\Admin\\source\\repos\\MiniProjectBuycar\\K5\\K5_BLACK.png"; // K5 검정색 이미지 파일 경로
             }
-            else if (selectedModel == "K5" && selectedColor == "쥐색")
+            else if (selectedModel == "K5" && selectedColor == "회색")
             {
                 imagePath = "C:\\Users\\Admin\\source\\repos\\MiniProjectBuycar\\K5\\K5_GRAY.png"; // K5 쥐색 이미지 파일 경로
             }
@@ -82,7 +82,7 @@ namespace MiniProjectBuycar
             {
                 imagePath = "C:\\Users\\Admin\\source\\repos\\MiniProjectBuycar\\K8\\K8_BLACK.png"; // K8 검정색 이미지 파일 경로
             }
-            else if (selectedModel == "K8" && selectedColor == "쥐색")
+            else if (selectedModel == "K8" && selectedColor == "회색")
             {
                 imagePath = "C:\\Users\\Admin\\source\\repos\\MiniProjectBuycar\\K8\\K8_GRAY.png"; // K8 쥐색 이미지 파일 경로
             }
@@ -109,6 +109,40 @@ namespace MiniProjectBuycar
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
+
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            // 선택된 모델, 엔진, 색상 가져오기
+            string selectedModel = comboBox1.SelectedItem?.ToString() ?? "모델 미선택";
+            string selectedEngine = comboBox2.SelectedItem?.ToString() ?? "엔진 미선택";
+            string selectedColor = comboBox3.SelectedItem?.ToString() ?? "색상 미선택";
+
+            // 데이터 저장 경로 지정 (예: C:\Data\orderData.txt)
+            string filePath = @"C:\Temp\OrderPageData.txt";
+
+            try
+            {
+                // 데이터 파일에 쓰기
+                using (StreamWriter writer = new StreamWriter(filePath))
+                {
+                    writer.WriteLine("모델: " + selectedModel);
+                    writer.WriteLine("엔진: " + selectedEngine);
+                    writer.WriteLine("색상: " + selectedColor);
+                }
+
+                MessageBox.Show("주문 정보가 저장되었습니다.", "저장 완료", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("데이터를 저장하는 동안 오류가 발생했습니다: " + ex.Message, "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            // AddOption 폼 인스턴스 생성 및 데이터 전달
+            AddOption addOptionForm = new AddOption();
+            addOptionForm.ShowDialog();
+        }
+
     } // Form1:Form
 }
