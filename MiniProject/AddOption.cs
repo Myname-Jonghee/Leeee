@@ -6,15 +6,21 @@ namespace MiniProjectBuycar
 {
     public partial class AddOption : Form
     {
+        
+        
+
         public AddOption()
         {
             InitializeComponent();
+            
             comboBox1.Items.Add("스탠다드");
             comboBox1.Items.Add("노블레스");
             comboBox1.Items.Add("시그니처");
 
             comboBox1.SelectedIndexChanged += new EventHandler(comboBox1_SelectedIndexChanged);
             Optionbutton.Click += new EventHandler(Optionbutton_Click);
+
+
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -47,18 +53,19 @@ namespace MiniProjectBuycar
                 "(SERVICE_NAME=xe)));" +
                 "User Id=SCOTT;Password=TIGER;";
 
-            // 데이터 저장 코드
+            // 데이터 저장 코드    
             try
             {
                 using (OracleConnection conn = new OracleConnection(connectionString))
                 {
                     conn.Open();
 
-                    string query = "INSERT INTO Customer (Options) VALUES (:options)";
-                    using (OracleCommand cmd = new OracleCommand(query, conn))
+                    string updateQuery = "UPDATE Customer SET Options = :options WHERE CUSTOMERID =  (SELECT MAX(CustomerID) FROM Customer)";
+                    using (OracleCommand updateCmd = new OracleCommand(updateQuery, conn))
                     {
-                        cmd.Parameters.Add(new OracleParameter("options", selectOption));
-                        cmd.ExecuteNonQuery();
+                        
+                        updateCmd.Parameters.Add(new OracleParameter("options", selectOption));
+                        updateCmd.ExecuteNonQuery();
 
                         MessageBox.Show("옵션 선택이 완료되었습니다.", "저장 완료", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
