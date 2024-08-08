@@ -1,3 +1,4 @@
+using Oracle.ManagedDataAccess.Client;
 namespace MiniProjectBuycar
 {
     public partial class OrderPage : Form
@@ -14,7 +15,6 @@ namespace MiniProjectBuycar
             comboBox2.SelectedIndexChanged += new EventHandler(comboBox2_SelectedIndexChanged);
             comboBox3.SelectedIndexChanged += new EventHandler(comboBox3_SelectedIndexChanged);
         }
-
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             // comboBox2의 항목을 초기화
@@ -36,7 +36,6 @@ namespace MiniProjectBuycar
                 comboBox2.Items.Add("3.5 LPi");
             }
         }
-
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
             // combobox2의 항목에 따라 comboBox3의 항목 설정
@@ -45,7 +44,6 @@ namespace MiniProjectBuycar
             comboBox3.Items.Add("흰색");
             comboBox3.Items.Add("회색");
         }
-
         private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
         {
             // comboBox1과 comboBox3의 선택된 항목을 가져옴
@@ -102,37 +100,37 @@ namespace MiniProjectBuycar
                 pictureBox1.Image = Image.FromFile(imagePath);
             }
         }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-        } // Form1_Load end
-
-        private void pictureBox1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button1_Click(object sender, EventArgs e)
+        private void Orderbutton_Click(object sender, EventArgs e)
         {
             // 선택된 모델, 엔진, 색상 가져오기
             string selectedModel = comboBox1.SelectedItem?.ToString() ?? "모델 미선택";
             string selectedEngine = comboBox2.SelectedItem?.ToString() ?? "엔진 미선택";
             string selectedColor = comboBox3.SelectedItem?.ToString() ?? "색상 미선택";
 
-            // 데이터 저장 경로 지정 (예: C:\Data\orderData.txt)
-            string filePath = @"C:\Temp\OrderPageData.txt";
+            // PLSQL 데이터 저장 scott 계정 접속
+            string connectionString = "Data Source=(DESCRIPTION=" +
+                "(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)" +
+                "(HOST=localhost)(PORT=1521)))" +
+                "(CONNECT_DATA=(SERVER=DEDICATED)" +
+                "(SERVICE_NAME=xe)));" +
+                "User Id=SCOTT;Password=TIGER;";
 
             try
             {
-                // 데이터 파일에 쓰기
-                using (StreamWriter writer = new StreamWriter(filePath))
+                using (OracleConnection conn = new OracleConnection(connectionString))
                 {
-                    writer.WriteLine("모델: " + selectedModel);
-                    writer.WriteLine("엔진: " + selectedEngine);
-                    writer.WriteLine("색상: " + selectedColor);
-                }
+                    conn.Open();
 
-                MessageBox.Show("주문 정보가 저장되었습니다.", "저장 완료", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    string query = "INSERT INTO Customer (Model, Engine, Color) VALUES (:model, :engine, :color )";
+                    using (OracleCommand cmd = new OracleCommand(query, conn))
+                    {
+                        cmd.Parameters.Add(new OracleParameter("model", selectedModel));
+                        cmd.Parameters.Add(new OracleParameter("engine", selectedEngine));
+                        cmd.Parameters.Add(new OracleParameter("color", selectedColor));
+                        MessageBox.Show("차량 정보 저장이 완료되었습니다.", "저장 완료", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -144,5 +142,5 @@ namespace MiniProjectBuycar
             addOptionForm.ShowDialog();
         }
 
-    } // Form1:Form
+    }//orderpage:form END
 }
