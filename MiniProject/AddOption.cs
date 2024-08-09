@@ -132,44 +132,50 @@ namespace MiniProjectBuycar
 
         }
 
-        private void LastConfirmbutton_Click(object sender, EventArgs e)
-        {
-            string connectString =  "Data Source=(DESCRIPTION=" +
-                                    "(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)" +
-                                    "(HOST=localhost)(PORT=1521)))" +
-                                    "(CONNECT_DATA=(SERVER=DEDICATED)" +
-                                    "(SERVICE_NAME=xe)));" +
-                                    "User Id=SCOTT;Password=TIGER;";
+         private void LastConfirmbutton_Click(object sender, EventArgs e)
+ {
+     string connectString =  "Data Source=(DESCRIPTION=" +
+                             "(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)" +
+                             "(HOST=localhost)(PORT=1521)))" +
+                             "(CONNECT_DATA=(SERVER=DEDICATED)" +
+                             "(SERVICE_NAME=xe)));" +
+                             "User Id=SCOTT;Password=TIGER;";
 
-            using (OracleConnection conn = new OracleConnection(connectString))
-            {
-                conn.Open();
+     using (OracleConnection conn = new OracleConnection(connectString))
+     {
+         conn.Open();
 
-                string orderQuery = "INSERT INTO CUSTOMER (CustomerID, Model, Engine, Color, Options) " +
-                                    "SELECT SEQ_CUSTOMERID.NEXTVAL, Model, Engine, Color, Options FROM CUSTOMERTEMP";
+         using (OracleTransaction transaction = conn.BeginTransaction()) // 트랜잭션 시작
+         {
+             try
+             {
+                 string orderQuery = "INSERT INTO CUSTOMER (CustomerID, Model, Engine, Color, Options) " +
+                                     "SELECT SEQ_CUSTOMERID.NEXTVAL, Model, Engine, Color, Options FROM CUSTOMERTEMP";
 
-                using (OracleCommand cmd = new OracleCommand(orderQuery, conn))
-                {
-                    try
-                    {
-                        int rowsAffected = cmd.ExecuteNonQuery();
+                 using (OracleCommand cmd = new OracleCommand(orderQuery, conn))
+                 {
+                     cmd.Transaction = transaction; // 트랜잭션을 명령에 할당
+                     int rowsAffected = cmd.ExecuteNonQuery();
 
-                        if (rowsAffected > 0)
-                        {
-                            MessageBox.Show("주문이 완료되어 출고처리 됩니다!", "성공", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }
-                        else
-                        {
-                            MessageBox.Show("CUSTOMERTEMP 테이블에 데이터가 없습니다.", "정보 없음", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"주문 처리 중 에러가 발생했습니다: {ex.Message}", "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-            }
-        }
+                     if (rowsAffected > 0)
+                     {
+                         transaction.Commit(); // 트랜잭션 커밋
+                         MessageBox.Show("주문이 완료되어 출고처리 됩니다!", "성공", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                     }
+                     else
+                     {
+                         transaction.Rollback(); // 트랜잭션 롤백
+                         MessageBox.Show("CUSTOMERTEMP 테이블에 데이터가 없습니다.", "정보 없음", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                     }
+                 }
+             }
+             catch (Exception ex)
+             {
+                 MessageBox.Show($"주문 처리 중 에러가 발생했습니다: {ex.Message}", "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
+             }
+         }
+     }
+ }
 
          private void Cancelbutton_Click(object sender, EventArgs e)
             {
