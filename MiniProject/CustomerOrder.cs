@@ -5,6 +5,10 @@ namespace MiniProjectBuycar
 {
     public partial class OrderPage : Form
     {
+        private int CustomerID;
+        private string selectedModel;
+        private string selectedEngine;
+        private string selectedColor;
         public int NewCustomerID { get; private set; }
         public OrderPage()
         {
@@ -26,7 +30,7 @@ namespace MiniProjectBuycar
             // comboBox1에서 선택한 항목에 따라 comboBox2의 항목 추가
             if (comboBox1.SelectedItem.ToString() == "K3")
             {
-                comboBox2.Items.Add("1.6가솔린");
+                comboBox2.Items.Add("1.6 가솔린");
             }
             else if (comboBox1.SelectedItem.ToString() == "K5")
             {
@@ -35,7 +39,7 @@ namespace MiniProjectBuycar
             }
             else if (comboBox1.SelectedItem.ToString() == "K8")
             {
-                comboBox2.Items.Add("3.5가솔린");
+                comboBox2.Items.Add("3.5 가솔린");
                 comboBox2.Items.Add("3.5 LPi");
             }
         }
@@ -106,9 +110,9 @@ namespace MiniProjectBuycar
         private void Orderbutton_Click(object sender, EventArgs e)
         {
             // 선택된 모델, 엔진, 색상 가져오기
-            string selectedModel = comboBox1.SelectedItem?.ToString() ?? "모델 미선택";
-            string selectedEngine = comboBox2.SelectedItem?.ToString() ?? "엔진 미선택";
-            string selectedColor = comboBox3.SelectedItem?.ToString() ?? "색상 미선택";
+            selectedModel = comboBox1.SelectedItem?.ToString() ?? "모델 미선택";
+            selectedEngine = comboBox2.SelectedItem?.ToString() ?? "엔진 미선택";
+            selectedColor = comboBox3.SelectedItem?.ToString() ?? "색상 미선택";
 
             // PLSQL 데이터 저장 scott 계정 접속
             string connectionString = "Data Source=(DESCRIPTION=" +
@@ -124,19 +128,36 @@ namespace MiniProjectBuycar
                 {
                     conn.Open();
 
-                    string insertQuery = "INSERT INTO Customer (CustomerID, Model, Engine, Color) VALUES (SEQ_CUSTOMERID.NEXTVAL, :model, :engine, :color)";
+                    // CustomerTemp 테이블 생성
+                    string createTemp = "CREATE TABLE CustomerTemp(Model VARCHAR2(20), Engine VARCHAR2(20), Color VARCHAR2(20), Options VARCHAR2(20))";
+                    using (OracleCommand createCmd = new OracleCommand(createTemp, conn))
+                    {
+                        try
+                        {
+                            createCmd.ExecuteNonQuery(); // 테이블 생성 명령 실행
+                        }
+                        catch (OracleException ex) when (ex.Number == 955)
+                        {
+                            // 테이블이 이미 존재하는 경우 발생할 수 있는 오류 955를 무시하고 진행
+                        }
+                    }
+
+                    // 정보 저장
+                    string insertQuery = "INSERT INTO CustomerTemp (Model, Engine, Color) VALUES (:model, :engine, :color)";
                     using (OracleCommand insertCmd = new OracleCommand(insertQuery, conn))
                     {
                         insertCmd.Parameters.Add(new OracleParameter("model", selectedModel));
                         insertCmd.Parameters.Add(new OracleParameter("engine", selectedEngine));
                         insertCmd.Parameters.Add(new OracleParameter("color", selectedColor));
-                        MessageBox.Show("차량 정보 저장이 완료되었습니다. 고객 ID: " + NewCustomerID, "저장 완료", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        insertCmd.ExecuteNonQuery();
-                    
+
+                        insertCmd.ExecuteNonQuery(); // 데이터 삽입 명령 실행
+
+                        MessageBox.Show($"차량 정보가 저장되었습니다.", "저장 완료", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
-                    AddOption addOption = new AddOption();
-                    addOption.ShowDialog();
-                    conn.Close();
+
+                    // AddOption 폼을 열고 현재 저장된 정보를 전달
+                    AddOption addOptionForm = new AddOption();
+                    addOptionForm.ShowDialog();
                 }
             }
             catch (Exception ex)
