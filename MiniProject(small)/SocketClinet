@@ -1,0 +1,74 @@
+using System;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        // 서버의 IP 및 포트 설정
+        IPAddress serverAddr = IPAddress.Parse("127.0.0.1");  // 기본 서버 IP 설정
+        int port = 13000;
+
+        // 명령줄 인수 확인 및 할당
+        if (args.Length >= 2)
+        {
+            serverAddr = IPAddress.Parse(args[1]);
+        }
+
+        // 소켓 생성
+        Socket clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
+        try
+        {
+            // 서버에 연결
+            clientSocket.Connect(new IPEndPoint(serverAddr, port));
+            Console.WriteLine("서버에 연결되었습니다. 서버: {0}:{1}", serverAddr, port);
+
+            byte[] data = new byte[256];
+
+            // 서버로부터 퀴즈를 받고 정답을 입력하는 루프
+            while (true)
+            {
+                // 서버에서 보낸 문제를 수신
+                int bytesReceived = clientSocket.Receive(data);
+                if (bytesReceived == 0 )
+                    break; // 연결이 끊어진 경우
+
+                string serverMessage = Encoding.Default.GetString(data, 0, bytesReceived);
+                Console.WriteLine(serverMessage);
+
+                if (serverMessage.Contains("축하합니다! 모든 문제를 맞추셨습니다. 우승하셨습니다!"))
+                {
+                    Console.WriteLine("축하합니다, 우승입니다! 클라이언트를 종료합니다.");
+                    break;
+                }
+
+                // 정답 입력
+                string answer = Console.ReadLine();
+                byte[] answerBytes = Encoding.Default.GetBytes(answer);
+
+                // 입력한 정답을 서버로 전송
+                clientSocket.Send(answerBytes);
+
+                // 다시 서버의 응답을 받음
+                bytesReceived = clientSocket.Receive(data);
+                string response = Encoding.Default.GetString(data, 0, bytesReceived);
+                Console.WriteLine(response);
+            }
+
+            // 소켓 종료
+            clientSocket.Shutdown(SocketShutdown.Both);
+            clientSocket.Close();
+        }
+        catch (SocketException e)
+        {
+            Console.WriteLine("소켓 예외 발생: {0}", e.Message);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("예외 발생: {0}", e.Message);
+        }
+    }
+}
