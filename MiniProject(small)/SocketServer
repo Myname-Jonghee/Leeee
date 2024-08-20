@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace EchoServer
 {
@@ -17,6 +18,9 @@ namespace EchoServer
 
             try
             {
+                //score 갯수로 while구문 탈출
+                int[] answers = { 1, 2, 3 };
+                int score = 0;
                 // 로컬 엔드포인트 설정 (IP와 포트)
                 IPEndPoint localEndPoint = new IPEndPoint(localAddr, port);
 
@@ -28,7 +32,7 @@ namespace EchoServer
 
                 Console.WriteLine("퀴즈 서버가 시작되었습니다. 클라이언트를 기다리고 있습니다...");
 
-                while (true)
+                do
                 {
                     // 클라이언트의 연결을 기다림 (Blocking)
                     Socket clientSocket = serverSocket.Accept();
@@ -41,9 +45,7 @@ namespace EchoServer
                         "문제 3: OOP에서 상속을 제공하는 키워드는?\n1. class\n2. interface\n3. extends\n정답을 입력하세요 (1, 2, 3): "
                     };
 
-                    // 정답 배열
-                    int[] answers = { 1, 2, 3 };
-                    int score = 0;
+
 
                     for (int i = 0; i < questions.Length; i++)
                     {
@@ -69,6 +71,10 @@ namespace EchoServer
                             string incorrectMessage = "오답입니다!\n";
                             byte[] incorrectBytes = Encoding.Default.GetBytes(incorrectMessage);
                             clientSocket.Send(incorrectBytes);
+                            string nextTryMessage = "다음에 도전하세요";
+                            byte[] nextTryBytes = Encoding.Default.GetBytes(nextTryMessage);
+                            clientSocket.Send(nextTryBytes);
+                            break;
                         }
                     }
 
@@ -80,12 +86,13 @@ namespace EchoServer
                     }
                     else
                     {
-                        finalMessage = $"퀴즈가 끝났습니다. 총 {score}개 맞추셨습니다.\n";
+                        finalMessage = $"\n" +
+                            $"퀴즈가 끝났습니다. 총 {score}개 맞추셨습니다.\n";
                     }
 
                     byte[] finalMessageBytes = Encoding.Default.GetBytes(finalMessage);
                     clientSocket.Send(finalMessageBytes);
-                    
+
                     // 종료 메시지 전송
                     string exitMessage = "연결을 종료합니다. 안녕히 가세요.";
                     byte[] exitMessageBytes = Encoding.Default.GetBytes(exitMessage);
@@ -94,8 +101,9 @@ namespace EchoServer
                     // 클라이언트 소켓 종료
                     clientSocket.Shutdown(SocketShutdown.Both);
                     clientSocket.Close();
+                    serverSocket.Close();
                     Console.WriteLine("클라이언트 연결 종료됨.");
-                }
+                } while (score != 3);
             }
             catch (SocketException e)
             {
