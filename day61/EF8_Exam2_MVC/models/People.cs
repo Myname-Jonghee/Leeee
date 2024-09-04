@@ -1,16 +1,17 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
-using EF8_Exam2_MVC.Models;
 
 namespace EF8_Exam2_MVC.Models
 {
-    public class PeopleDbContext : DbContext
+    public class People
     {
-        public PeopleDbContext(DbContextOptions options) : base(options)
-        {
-        }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+        [Required]
+        public string Name { get; set; }
+        [Required]
+        public string Hp { get; set; }
 
-        public DbSet<People> Peoples { get; set; }
     }
 }
