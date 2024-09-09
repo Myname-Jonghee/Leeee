@@ -1,0 +1,91 @@
+
+<style>
+    .small-image {
+        width: 300px; /* 원하는 크기로 너비를 설정 */
+        height: auto; /* 이미지 비율을 유지하면서 자동으로 높이 설정 */
+    }
+</style>
+
+<div class="small-image-section">
+    <a href="@Url.Action("Index", "Home")">
+        <img src="~/SimBol.png" alt="Simbol Image" class="small-image">
+    </a>
+</div>
+  
+
+<!-- 관리자 메뉴 버튼 -->
+@if (ViewBag.IsLoggedIn != null && ViewBag.IsLoggedIn == true)
+{
+    <button onclick="location.href='@Url.Action("AdminMenu", "Home")'">관리자메뉴</button>
+}
+else
+{
+    <a href="#" class="btn btn-secondary disabled" aria-disabled="true">관리자메뉴 (로그인 필요)</a>
+}
+
+
+
+<div class="custom-background">
+    <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+        <!-- 고급스러운 카드 UI -->
+        <div class="card shadow-lg custom-card">
+            <div class="card-body p-5">
+                <h2 class="card-title mb-4">문의하기</h2>
+                <p class="card-text mb-4">아래 양식을 기입하여 보내주시면, 빠른 시일 내에 정확한 답변을 드리겠습니다.</p>
+
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success">
+                        @TempData["SuccessMessage"]
+                    </div>
+                }
+
+                <form asp-action="Success" method="post" enctype="multipart/form-data">
+                    <!-- 제목 -->
+                    <div class="form-group mb-4">
+                        <label for="Title">제목 *</label>
+                        <input type="text" class="form-control custom-input" id="Title" name="Title" placeholder="제목을 입력해 주세요" required />
+                    </div>
+
+                    <!-- 문의 내용 -->
+                    <div class="form-group mb-4">
+                        <label for="Content">문의 내용 *</label>
+                        <textarea class="form-control custom-input" id="Content" name="Contents" rows="5" placeholder="내용을 입력해 주세요" required></textarea>
+                    </div>
+
+                    <!-- 항목 -->
+                    <div class="form-group mb-4">
+                        <label>항목 *</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" id="product" name="Category" value="제품" checked />
+                            <label class="form-check-label" for="product">제품</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" id="orderDelivery" name="Category" value="주문/배송" />
+                            <label class="form-check-label" for="orderDelivery">주문/배송</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" id="media" name="Category" value="미디어" />
+                            <label class="form-check-label" for="media">미디어</label>
+                        </div>
+                    </div>
+
+                    <!-- 이름 및 이메일 -->
+                    <div class="form-row mb-4">
+                        <div class="form-group col-md-6">
+                            <label for="UserName">이름 *</label>
+                            <input type="text" class="form-control custom-input" id="UserName" name="Name" placeholder="이름을 입력해 주세요" required />
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="Email">이메일 *</label>
+                            <input type="email" class="form-control custom-input" id="Email" name="Email" placeholder="이메일을 입력해 주세요" required />
+                        </div>
+                    </div>
+
+                    <!-- 제출 버튼 -->
+                    <button type="submit" class="btn custom-button btn-block">문의하기</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
