@@ -1,0 +1,26 @@
+using Microsoft.EntityFrameworkCore;
+
+
+namespace Project_Battery.Models
+{
+    public partial class SignUpDbContext :DbContext
+    {
+        public SignUpDbContext()
+        {
+        }
+        public SignUpDbContext(DbContextOptions<SignUpDbContext> options) : base(options)
+        {
+        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+
+        }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            OnModelCreatingPartial(modelBuilder);
+        }
+        public DbSet<Sign_Up>  Sign_Up { get; set; }
+
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+    }
+}
