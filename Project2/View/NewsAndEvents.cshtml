@@ -1,0 +1,267 @@
+<style>
+        .custom-line {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            border: none;
+            border-top: 2px solid #000;
+            width: 100%;
+            margin: 1px;
+            padding: 10px 0;
+        }
+
+            .custom-line button {
+                padding: 20px 20px;
+                background-color: transparent;
+                color: black;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                position: relative;
+            }
+
+                .custom-line button::after {
+                    content: '';
+                    position: absolute;
+                    left: 0;
+                    bottom: 0;
+                    width: 0;
+                    height: 2px;
+                    background-color: red;
+                    transition: width 0.3s ease;
+                }
+
+                .custom-line button:hover::after {
+                    width: 100%;
+                }
+
+    .gray-custom-line {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        border: none;
+        border-top: 2px solid #ccc;
+        width: 100%;
+        margin: 1px;
+        padding: 10px 0;
+    }
+
+        .image-section {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+            .image-section img {
+                max-width: 100%;
+                height: auto;
+                margin-bottom: 50px;
+            }
+
+        .small-image-section {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .small-image {
+            width: 25%;
+            height: auto;
+        }
+
+        .custom-line-gray {
+            border: none;
+            border-top: 2px solid #ccc;
+            width: 100%;
+            margin: 1px;
+            padding: 10px 0;
+        }
+
+        .gray-background-section {
+            background-color: #f0f0f0;
+            padding: 20px;
+            margin-top: 20px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+            .gray-background-section h2 {
+                margin-top: 20px;
+            }
+
+        .image-row {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+            .image-row img {
+                width: 30%;
+                height: auto;
+                border-radius: 10px;
+            }
+
+        .dark-gray-box-row {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .dark-gray-box {
+            background-color: #d0d0d0;
+            padding: 20px;
+            width: 30%;
+            text-align: left;
+            border-radius: 10px;
+        }
+
+            .dark-gray-box h3 {
+                font-size: 16px;
+                margin: 0;
+            }
+
+            .dark-gray-box h4 {
+                font-size: 10px;
+                margin: 0;
+            }
+
+    .news-item {
+        text-align: left; /* 왼쪽 정렬 */
+        margin-bottom: 20px;
+    }
+
+    h5 {
+        font-size: 15px;
+        margin-top: 10px;
+        margin-bottom: 0px;
+        color: black;
+    }
+
+    h6 {
+        font-size: 13px;
+        color: darkgray;
+        margin-top: 0px;
+    }
+
+        .header-buttons {
+        position: absolute;
+        top: 80px;
+        right: 20px;
+        display: flex;
+        gap: 10px;
+    }
+
+    .header-button {
+        padding: 5px 5px;
+        background-color: #fff;
+        color: #000;
+        border: 2px solid #000;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .header-button:hover {
+        background-color: #000;
+        color: #fff;
+    }
+
+        <button onclick="location.href='@Url.Action("Product_Info", "Home")'" > Product Info</button >
+</style>
+
+
+
+<div class="small-image-section">
+    <a href="@Url.Action("Index", "Home")">
+        <img src="~/SimBol.png" alt="Simbol Image" class="small-image">
+    </a>
+</div>
+
+<h1>News & Events</h1>
+
+<div class="custom-line"></div>
+<div class="news-item">
+    <h5>ANU Chem overtakes Panasonic to become No.1 EV battery maker in Q1</h5>
+    <h6>19.08.2024</h6>
+</div>
+<div class="gray-custom-line"></div>
+
+
+<div class="news-item">
+    <h5>Power Outages Are Not a Problem Anymore with the ANU Home Battery</h5>
+    <h6>10.08.2024</h6>
+</div>
+<div class="gray-custom-line"></div>
+
+
+<div class="news-item">
+    <h5>ANU Chem Unveils Its New Modular Type Home Battery RESU10M at ees Europe 2024</h5>
+    <h6>23.07.2024</h6>
+</div>
+<div class="gray-custom-line"></div>
+
+
+<div class="news-item">
+    <h5>ANU Chem Teams up with Envirostream for Innovative Battery Recycling Solutions in Australia</h5>
+    <h6>01.07.2024</h6>
+</div>
+<div class="gray-custom-line"></div>
+
+
+<div class="news-item">
+    <h5>Startups Bring New and Exciting Insight to ANU Chem’s Battery Business</h5>
+    <h6>15.06.2024</h6>
+</div>
+<div class="gray-custom-line"></div>
+
+
+<div class="news-item">
+    <h5> AGL upgrades VPP with latest technology from Tesla, SolarEdge and ANU Chem</h5>
+    <h6>03.06.2024</h6>
+</div>
+<div class="gray-custom-line"></div>
+
+
+<div class="news-item">
+    <h5>
+        ANU Chem Launches Revamped ESS Partner Portal
+    </h5>
+    <h6>03.05.2024</h6>
+</div>
+<div class="gray-custom-line"></div>
+
+
+<div class="news-item">
+    <h5>
+        [Byline Article] Can Australia be the world’s first ‘Solar Native’?
+    </h5>
+    <h6>03.03.2024</h6>
+</div>
+<div class="gray-custom-line"></div>
+
+
+<div class="news-item">
+    <h5>
+        [Byline Article] Change Your Energy, Charge Your Life’
+    </h5>
+    <h6>01.02.2024</h6>
+</div>
+<div class="gray-custom-line"></div>
+
+
+<div class="news-item">
+    <h5>
+        ANU Chem launches ANU ESS Partner Portal’
+    </h5>
+    <h6>31.01.2024</h6>
+</div>
+<div class="gray-custom-line"></div>
+
+
+<div class="news-item">
+    <h5>
+        Happy New Year!!
+    </h5>
+    <h6>01.01.2024</h6>
+</div>
+<div class="gray-custom-line"></div>
