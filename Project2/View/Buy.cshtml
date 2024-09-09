@@ -1,0 +1,154 @@
+@model Project_Battery.Models.Purchase
+
+@{
+    ViewData["Title"] = "Purchase";
+}
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>주문 페이지</title>
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .order-container {
+            max-width: 800px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h3 {
+            text-align: center;
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 30px;
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        fieldset {
+            border: none;
+            padding: 0;
+            margin-bottom: 35px;
+        }
+
+        legend {
+            font-weight: 600;
+            font-size: 20px;
+            color: #444;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+
+        label {
+            display: block;
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        input::placeholder {
+            color: #bbb;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="order-container">
+        <h3>주문서</h3>
+        <form asp-action="Confirm" method="post">
+
+            <!-- 주문자 정보 -->
+            <fieldset>
+                <legend>주문자 정보</legend>
+                <label for="Name">주문자명</label>
+                <input type="text" id="Name" name="Name" required />
+
+                <label for="PhoneNumber">휴대폰번호</label>
+                <input type="text" id="PhoneNumber" name="PhoneNumber" required maxlength="11" placeholder="-없이 입력" />
+
+                <label for="Email">이메일</label>
+                <input type="email" id="Email" name="Email" required />
+            </fieldset>
+
+            <!-- 배송지 정보 -->
+            <fieldset>
+                <legend>배송지 정보</legend>
+                <label for="Address">주소</label>
+                <input type="text" id="Address" name="Address" required />
+            </fieldset>
+
+            <!-- 결제 정보 -->
+            <fieldset>
+                <legend>결제 정보</legend>
+                <label for="CardNumber">카드번호</label>
+                <input type="text" id="CardNumber" name="CardNumber" required maxlength="16" placeholder="-없이 입력" />
+
+                <label for="ExpirationDate">유효기간</label>
+                <input type="text" id="ExpirationDate" name="ExpirationDate" required maxlength="5" pattern="\d{2}/\d{2}" placeholder="MM/YY" />
+
+                <label for="CVC">CVC</label>
+                <input type="text" id="CVC" name="CVC" required pattern="\d{3}" maxlength="3" />
+            </fieldset>
+
+            <button type="submit">결제하기</button>
+        </form>
+    </div>
+</body>
+</html>
+
+
+
