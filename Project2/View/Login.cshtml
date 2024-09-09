@@ -1,0 +1,126 @@
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: white;
+        padding: 0;
+    }
+
+    .login-container {
+        width: 100%;
+        max-width: 400px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+        .login-container h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .login-container form {
+            display: flex;
+            flex-direction: column;
+        }
+
+            .login-container form div {
+                margin-bottom: 15px;
+            }
+
+        .login-container input[type="text"],
+        .login-container input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .login-container button[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 18px;
+            background-color: #0056b3; /* 진한 파란색 */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+            .login-container button[type="submit"]:hover {
+                background-color: #004494; /* 더 어두운 파란색 */
+            }
+
+    .signup-btn {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+        .signup-btn a {
+            color: #007bff;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+            .signup-btn a:hover {
+                text-decoration: underline;
+            }
+
+    .small-image-section {
+        text-align: center;
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+
+    .small-image {
+        width: 200px;
+        height: auto;
+    }
+
+    /* 오류 메시지 스타일 */
+    .error-message {
+        color: red;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+</style>
+
+<div class="small-image-section">
+    <a href="@Url.Action("Index", "Home")">
+        <img src="~/SimBol.png" alt="Simbol Image" class="small-image">
+    </a>
+</div>
+
+<div class="login-container">
+    <h1>Login</h1>
+
+    <!-- 오류 메시지 표시  -->
+    @if (ViewBag.Message != null)
+    {
+        <div class="error-message">
+            @ViewBag.Message
+        </div>
+    }
+
+    <form asp-action="Login" method="post">
+        <div>
+            <label for="Username">Username</label>
+            <input type="text" id="Username" name="Username" required />
+        </div>
+        <div>
+            <label for="Password">Password</label>
+            <input type="password" id="Password" name="Password" required />
+        </div>
+        <div>
+            <button type="submit">Login</button>
+        </div>
+    </form>
+
+    <div class="signup-btn">
+        <a href="@Url.Action("SignUp", "Home")">Sign up</a>
+    </div>
+</div>
