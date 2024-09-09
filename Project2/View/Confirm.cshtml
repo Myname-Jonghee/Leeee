@@ -1,0 +1,126 @@
+@model Project_Battery.Models.Purchase
+
+@{
+    ViewData["Title"] = "Confirm";
+}
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>주문 확인</title>
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .confirm-container {
+            max-width: 800px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h3 {
+            text-align: center;
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 30px;
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        th, td {
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            padding: 7px;
+            background-color: #f2f2f2;
+            color: #333;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 15px;
+            background-color: #fff;
+            color: #333;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="confirm-container">
+        <h3>주문이 완료되었습니다!</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>주문번호</th>
+                    <th>주문자</th>
+                    <th>휴대폰번호</th>
+                    <th>이메일</th>
+                    <th>배송지</th>
+                    <th>카드번호</th>
+                    <th>유효기간</th>
+                    <th>CVC</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@Model.Id</td>
+                    <td>@Model.Name</td>
+                    <td>@Model.PhoneNumber</td>
+                    <td>@Model.Email</td>
+                    <td>@Model.Address</td>
+                    <td>@Model.CardNumber</td>
+                    <td>@Model.ExpirationDate</td>
+                    <td>@Model.CVC</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button type="button" onclick="window.location.href='@Url.Action("Index", "Home")'">주문서로 이동</button>
+    </div>
+</body>
+</html>
